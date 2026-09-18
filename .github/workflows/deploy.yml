@@ -64,5 +64,14 @@ jobs:
 
       - name: Verify Deployment
         run: |
-          sleep 5
-          curl --fail http://localhost:8081/hello
+          for i in {1..12}; do
+            if curl --fail http://localhost:8081/hello; then
+              echo "Deployment successful!"
+              exit 0
+            fi
+            echo "Application not ready. Retrying..."
+            sleep 5
+          done
+
+          echo "Deployment verification failed."
+          exit 1
